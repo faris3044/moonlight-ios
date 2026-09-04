@@ -342,8 +342,8 @@ static float L3_Y;
     }
     else
     {
-        LS_CENTER_X = _controlArea.size.width * .35 + _controlArea.origin.x;
-        LS_CENTER_Y = _controlArea.size.height * .75 + _controlArea.origin.y;
+        LS_CENTER_X = _controlArea.size.width * .18 + _controlArea.origin.x;
+        LS_CENTER_Y = _controlArea.size.height * .82 + _controlArea.origin.y;
         RS_CENTER_X = _controlArea.size.width * .65 + _controlArea.origin.x;
         RS_CENTER_Y = _controlArea.size.height * .75 + _controlArea.origin.y;
     }
