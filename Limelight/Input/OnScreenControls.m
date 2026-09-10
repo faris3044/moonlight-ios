@@ -374,15 +374,15 @@ static float L3_Y;
 }
 
 - (void) drawButtons {
-    UIImage* aButtonImage = [UIImage imageNamed:@"AButton"];
     UIImage* bButtonImage = [UIImage imageNamed:@"BButton"];
     UIImage* xButtonImage = [UIImage imageNamed:@"XButton"];
     UIImage* yButtonImage = [UIImage imageNamed:@"YButton"];
-    
-    CGRect aButtonFrame = CGRectMake(BUTTON_CENTER_X - aButtonImage.size.width / 2, BUTTON_CENTER_Y + BUTTON_DIST, aButtonImage.size.width, aButtonImage.size.height);
-    CGRect bButtonFrame = CGRectMake(BUTTON_CENTER_X + BUTTON_DIST, BUTTON_CENTER_Y - bButtonImage.size.height / 2, bButtonImage.size.width, bButtonImage.size.height);
-    CGRect xButtonFrame = CGRectMake(BUTTON_CENTER_X - BUTTON_DIST - xButtonImage.size.width, BUTTON_CENTER_Y - xButtonImage.size.height/ 2, xButtonImage.size.width, xButtonImage.size.height);
-    CGRect yButtonFrame = CGRectMake(BUTTON_CENTER_X - yButtonImage.size.width / 2, BUTTON_CENTER_Y - BUTTON_DIST - yButtonImage.size.height, yButtonImage.size.width, yButtonImage.size.height);
+    UIImage* aButtonImage = [UIImage imageNamed:@"JumpButton"];
+
+    CGRect aButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .78 - aButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .68 - aButtonImage.size.height / 2, aButtonImage.size.width, aButtonImage.size.height);
+    CGRect bButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .88 - bButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .68 - bButtonImage.size.height / 2, bButtonImage.size.width, bButtonImage.size.height);
+    CGRect xButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .80 - xButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .30 - xButtonImage.size.height / 2, xButtonImage.size.width, xButtonImage.size.height);
+    CGRect yButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .68 - yButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .80 - yButtonImage.size.height / 2, yButtonImage.size.width, yButtonImage.size.height);
     
     // create A button
     _aButton.contents = (id) aButtonImage.CGImage;
@@ -666,6 +666,13 @@ static float L3_Y;
         if (_aButton.superlayer != nil && [_aButton.presentationLayer hitTest:touchLocation]) {
             [_controllerSupport setButtonFlag:_controller flags:A_FLAG];
             _aTouch = touch;
+            UIImage* pressedJumpImage = [UIImage imageNamed:@"JumpButtonPressed"];
+_aButton.contents = (id)pressedJumpImage.CGImage;
+
+[CATransaction begin];
+[CATransaction setAnimationDuration:0.08];
+_aButton.transform = CATransform3DMakeScale(1.10, 1.10, 1.0);
+[CATransaction commit];
             updated = true;
         } else if (_bButton.superlayer != nil && [_bButton.presentationLayer hitTest:touchLocation]) {
             [_controllerSupport setButtonFlag:_controller flags:B_FLAG];
@@ -784,6 +791,13 @@ static float L3_Y;
         if (touch == _aTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:A_FLAG];
             _aTouch = nil;
+            UIImage* normalJumpImage = [UIImage imageNamed:@"JumpButton"];
+_aButton.contents = (id)normalJumpImage.CGImage;
+
+[CATransaction begin];
+[CATransaction setAnimationDuration:0.08];
+_aButton.transform = CATransform3DMakeScale(1.00, 1.00, 1.0);
+[CATransaction commit];
             updated = true;
         } else if (touch == _bTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:B_FLAG];
