@@ -378,8 +378,7 @@ static float L3_Y;
     UIImage* xButtonImage = [UIImage imageNamed:@"XButton"];
     UIImage* yButtonImage = [UIImage imageNamed:@"YButton"];
     UIImage* aButtonImage = [UIImage imageNamed:@"JumpButton"];
-
-    CGRect aButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .78 - aButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .68 - aButtonImage.size.height / 2, aButtonImage.size.width, aButtonImage.size.height);
+    CGRect aButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .78 - (aButtonImage.size.width * 1.45) / 2, _controlArea.origin.y + _controlArea.size.height * .68 - (aButtonImage.size.height * 1.45) / 2, aButtonImage.size.width * 1.45, aButtonImage.size.height * 1.45);   
     CGRect bButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .88 - bButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .68 - bButtonImage.size.height / 2, bButtonImage.size.width, bButtonImage.size.height);
     CGRect xButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .80 - xButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .30 - xButtonImage.size.height / 2, xButtonImage.size.width, xButtonImage.size.height);
     CGRect yButtonFrame = CGRectMake(_controlArea.origin.x + _controlArea.size.width * .68 - yButtonImage.size.width / 2, _controlArea.origin.y + _controlArea.size.height * .80 - yButtonImage.size.height / 2, yButtonImage.size.width, yButtonImage.size.height);
@@ -791,13 +790,7 @@ _aButton.transform = CATransform3DMakeScale(1.10, 1.10, 1.0);
         if (touch == _aTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:A_FLAG];
             _aTouch = nil;
-            UIImage* normalJumpImage = [UIImage imageNamed:@"JumpButton"];
-_aButton.contents = (id)normalJumpImage.CGImage;
-
-[CATransaction begin];
-[CATransaction setAnimationDuration:0.08];
-_aButton.transform = CATransform3DMakeScale(1.00, 1.00, 1.0);
-[CATransaction commit];
+            
             updated = true;
         } else if (touch == _bTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:B_FLAG];
