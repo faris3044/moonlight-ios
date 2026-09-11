@@ -401,7 +401,7 @@ static float L3_Y;
     // create Y Button
     _yButton.frame = _swapABXY ? xButtonFrame : yButtonFrame;
     _yButton.contents = (id) yButtonImage.CGImage;
-    [_view.layer addSublayer:_yButton];
+   // [_view.layer addSublayer:_yButton];
     
     // create Down button
     UIImage* downButtonImage = [UIImage imageNamed:@"DownButton"];
@@ -491,7 +491,7 @@ static float L3_Y;
     UIImage* rightStickImage = [UIImage imageNamed:@"StickInner"];
     _rightStick.frame = CGRectMake(RS_CENTER_X - rightStickImage.size.width / 2, RS_CENTER_Y - rightStickImage.size.height / 2, rightStickImage.size.width, rightStickImage.size.height);
     _rightStick.contents = (id) rightStickImage.CGImage;
-    
+
     STICK_INNER_SIZE = rightStickImage.size.width;
     STICK_OUTER_SIZE = rightStickBgImage.size.width;
 }
@@ -589,8 +589,8 @@ static float L3_Y;
             float deltaX = touchLocation.x - previousLocation.x;
             float deltaY = touchLocation.y - previousLocation.y;
 
-            float xStickVal = deltaX / 20.0f;
-            float yStickVal = deltaY / 20.0f;
+           float xStickVal = deltaX / 2.0f;
+           float yStickVal = deltaY / 2.0f;
 
             if (xStickVal > 1.0f) xStickVal = 1.0f;
             if (xStickVal < -1.0f) xStickVal = -1.0f;
