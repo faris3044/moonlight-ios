@@ -670,7 +670,7 @@ _aButton.contents = (id)pressedJumpImage.CGImage;
 
 [CATransaction begin];
 [CATransaction setAnimationDuration:0.08];
-_aButton.transform = CATransform3DMakeScale(1.10, 1.10, 1.0);
+_aButton.transform = CATransform3DMakeScale(1.25, 1.25, 1.0);
 [CATransaction commit];
             updated = true;
         } else if (_bButton.superlayer != nil && [_bButton.presentationLayer hitTest:touchLocation]) {
