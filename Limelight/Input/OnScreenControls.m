@@ -666,12 +666,18 @@ static float L3_Y;
             [_controllerSupport setButtonFlag:_controller flags:A_FLAG];
             _aTouch = touch;
             UIImage* pressedJumpImage = [UIImage imageNamed:@"JumpButtonPressed"];
-_aButton.contents = (id)pressedJumpImage.CGImage;
+            _aButton.contents = (id)pressedJumpImage.CGImage;
+            [CATransaction begin];
+            [CATransaction setDisableActions:YES];
 
-[CATransaction begin];
-[CATransaction setAnimationDuration:0.08];
-_aButton.transform = CATransform3DMakeScale(1.10, 1.10, 1.0);
-[CATransaction commit];
+            CGRect jumpBounds = _aButton.bounds;
+            jumpBounds.size.width *= 1.25;
+            jumpBounds.size.height *= 1.25;
+            _aButton.bounds = jumpBounds;
+
+            [CATransaction commit];
+
+
             updated = true;
         } else if (_bButton.superlayer != nil && [_bButton.presentationLayer hitTest:touchLocation]) {
             [_controllerSupport setButtonFlag:_controller flags:B_FLAG];
@@ -790,6 +796,19 @@ _aButton.transform = CATransform3DMakeScale(1.10, 1.10, 1.0);
         if (touch == _aTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:A_FLAG];
             _aTouch = nil;
+
+            [CATransaction begin];
+            [CATransaction setDisableActions:YES];
+
+            CGRect jumpBounds = _aButton.bounds;
+            jumpBounds.size.width /= 1.25;
+            jumpBounds.size.height /= 1.25;
+           _aButton.bounds = jumpBounds;
+
+            [CATransaction commit];
+
+UIImage* normalJumpImage = [UIImage imageNamed:@"JumpButton"];
+_aButton.contents = (id)normalJumpImage.CGImage; 
             
             updated = true;
         } else if (touch == _bTouch) {
