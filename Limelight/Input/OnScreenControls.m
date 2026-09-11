@@ -486,12 +486,11 @@ static float L3_Y;
     UIImage* rightStickBgImage = [UIImage imageNamed:@"StickOuter"];
     _rightStickBackground.frame = CGRectMake(RS_CENTER_X - rightStickBgImage.size.width / 2, RS_CENTER_Y - rightStickBgImage.size.height / 2, rightStickBgImage.size.width, rightStickBgImage.size.height);
     _rightStickBackground.contents = (id) rightStickBgImage.CGImage;
-    [_view.layer addSublayer:_rightStickBackground];
+    
     
     UIImage* rightStickImage = [UIImage imageNamed:@"StickInner"];
     _rightStick.frame = CGRectMake(RS_CENTER_X - rightStickImage.size.width / 2, RS_CENTER_Y - rightStickImage.size.height / 2, rightStickImage.size.width, rightStickImage.size.height);
     _rightStick.contents = (id) rightStickImage.CGImage;
-    [_view.layer addSublayer:_rightStick];
     
     STICK_INNER_SIZE = rightStickImage.size.width;
     STICK_OUTER_SIZE = rightStickBgImage.size.width;
@@ -585,20 +584,22 @@ static float L3_Y;
             
             updated = true;
         } else if (touch == _rsTouch) {
-            if (xLoc > rsMaxX) xLoc = rsMaxX;
-            if (xLoc < rsMinX) xLoc = rsMinX;
-            if (yLoc > rsMaxY) yLoc = rsMaxY;
-            if (yLoc < rsMinY) yLoc = rsMinY;
-            
-            _rightStick.frame = CGRectMake(xLoc - STICK_INNER_SIZE / 2, yLoc - STICK_INNER_SIZE / 2, STICK_INNER_SIZE, STICK_INNER_SIZE);
-            
-            float xStickVal = (xLoc - RS_CENTER_X) / (rsMaxX - RS_CENTER_X);
-            float yStickVal = (yLoc - RS_CENTER_Y) / (rsMaxY - RS_CENTER_Y);
-            
-            if (fabsf(xStickVal) < STICK_DEAD_ZONE) xStickVal = 0;
-            if (fabsf(yStickVal) < STICK_DEAD_ZONE) yStickVal = 0;
-            
-            [_controllerSupport updateRightStick:_controller x:0x7FFE * xStickVal y:0x7FFE * -yStickVal];
+            CGPoint previousLocation = [touch previousLocationInView:_view];
+
+            float deltaX = touchLocation.x - previousLocation.x;
+            float deltaY = touchLocation.y - previousLocation.y;
+
+            float xStickVal = deltaX / 20.0f;
+            float yStickVal = deltaY / 20.0f;
+
+            if (xStickVal > 1.0f) xStickVal = 1.0f;
+            if (xStickVal < -1.0f) xStickVal = -1.0f;
+            if (yStickVal > 1.0f) yStickVal = 1.0f;
+            if (yStickVal < -1.0f) yStickVal = -1.0f;
+
+            [_controllerSupport updateRightStick:_controller
+                                   x:0x7FFF * xStickVal
+                                   y:0x7FFF * -yStickVal];
             
             updated = true;
         } else if (touch == _dpadTouch) {
@@ -765,16 +766,8 @@ static float L3_Y;
             }
             _lsTouch = touch;
             stickTouch = true;
-        } else if (_rightStick.superlayer != nil && [_rightStick.presentationLayer hitTest:touchLocation]) {
-            if (r3TouchStart != nil) {
-                // Find elapsed time and convert to milliseconds
-                // Use (-) modifier to conversion since receiver is earlier than now
-                double r3TouchTime = [r3TouchStart timeIntervalSinceNow] * -1000.0;
-                if (r3TouchTime < STICK_CLICK_RATE) {
-                    [_controllerSupport setButtonFlag:_controller flags:RS_CLK_FLAG];
-                    updated = true;
-                }
-            }
+        } else if (touchLocation.x > CGRectGetMidX(_controlArea)) {
+            
             _rsTouch = touch;
             stickTouch = true;
         }
