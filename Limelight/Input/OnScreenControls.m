@@ -52,6 +52,9 @@
     UITouch* _l1Touch;
     UITouch* _l2Touch;
     UITouch* _l3Touch;
+    UITouch* _startupTapTouch;
+    NSInteger _startupTapCount;
+    BOOL _startupTapMode;
     
     NSDate* l3TouchStart;
     NSDate* r3TouchStart;
@@ -119,6 +122,9 @@ static float L3_Y;
     _controller = [controllerSupport getOscController];
     _deadTouches = [[NSMutableArray alloc] init];
     _swapABXY = streamConfig.swapABXYButtons;
+    _startupTapTouch = nil;
+    _startupTapCount = 0;
+    _startupTapMode = YES;
     
     _iPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
     _controlArea = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
@@ -663,7 +669,11 @@ static float L3_Y;
     for (UITouch* touch in touches) {
         CGPoint touchLocation = [touch locationInView:_view];
         
-        if (_aButton.superlayer != nil && [_aButton.presentationLayer hitTest:touchLocation]) {
+        if (_startupTapMode) {
+        [_controllerSupport setButtonFlag:_controller flags:PLAY_FLAG];
+       _startupTapTouch = touch;
+           updated = true;
+        } else if (_aButton.superlayer != nil && [_aButton.presentationLayer hitTest:touchLocation]) {
             [_controllerSupport setButtonFlag:_controller flags:A_FLAG];
             _aTouch = touch;
             UIImage* pressedJumpImage = [UIImage imageNamed:@"JumpButtonPressed"];
@@ -786,7 +796,17 @@ static float L3_Y;
     BOOL updated = false;
     BOOL touched = false;
     for (UITouch* touch in touches) {
-        if (touch == _aTouch) {
+        if (touch == _startupTapTouch) {
+        [_controllerSupport clearButtonFlag:_controller flags:PLAY_FLAG];
+        _startupTapTouch = nil;
+        _startupTapCount++;
+
+    if (_startupTapCount >= 2) {
+        _startupTapMode = NO;
+    }
+
+         updated = true;
+        } else if (touch == _aTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:A_FLAG];
             _aTouch = nil;
 
