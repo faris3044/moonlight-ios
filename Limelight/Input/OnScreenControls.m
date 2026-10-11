@@ -669,7 +669,11 @@ static float L3_Y;
     for (UITouch* touch in touches) {
         CGPoint touchLocation = [touch locationInView:_view];
         
-        if (_startupTapMode) {
+        if (_startupTapMode && _leftStick.superlayer != nil &&
+    [_leftStick.presentationLayer hitTest:touchLocation]) {
+    _startupTapMode = NO;
+}
+            if (_startupTapMode) {
         [_controllerSupport setButtonFlag:_controller flags:PLAY_FLAG];
        _startupTapTouch = touch;
            updated = true;
@@ -801,9 +805,7 @@ static float L3_Y;
         _startupTapTouch = nil;
         _startupTapCount++;
 
-    if (_startupTapCount >= 2) {
-        _startupTapMode = NO;
-    }
+    
 
          updated = true;
         } else if (touch == _aTouch) {
