@@ -55,6 +55,8 @@
     UITouch* _startupTapTouch;
     NSInteger _startupTapCount;
     BOOL _startupTapMode;
+    BOOL _menuTouchMode;
+    UITouch* _menuTapTouch;
     
     NSDate* l3TouchStart;
     NSDate* r3TouchStart;
@@ -125,6 +127,8 @@ static float L3_Y;
     _startupTapTouch = nil;
     _startupTapCount = 0;
     _startupTapMode = YES;
+    _menuTouchMode = NO;
+    _menuTapTouch = nil;
     
     _iPad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
     _controlArea = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
@@ -628,6 +632,8 @@ static float L3_Y;
             }
             
             buttonTouch = true;
+        } else if (touch == _menuTapTouch) {
+            buttonTouch = true;
         } else if (touch == _aTouch) {
             buttonTouch = true;
         } else if (touch == _bTouch) {
@@ -672,12 +678,30 @@ static float L3_Y;
         if (_startupTapMode && _leftStick.superlayer != nil &&
     [_leftStick.presentationLayer hitTest:touchLocation]) {
     _startupTapMode = NO;
+    _menuTouchMode = YES;
+    [_deadTouches addObject:touch];
+    updated = true;
+    continue;
+}
+if (_menuTouchMode && _leftStick.superlayer != nil &&
+    [_leftStick.presentationLayer hitTest:touchLocation]) {
+    _menuTouchMode = NO;
+    [_deadTouches addObject:touch];
+    updated = true;
+    continue;
 }
             if (_startupTapMode) {
         [_controllerSupport setButtonFlag:_controller flags:PLAY_FLAG];
        _startupTapTouch = touch;
            updated = true;
-        } else if (_aButton.superlayer != nil && [_aButton.presentationLayer hitTest:touchLocation]) {
+        } else if (_menuTouchMode) {
+    if (_menuTapTouch == nil) {
+        [(StreamView*)_view updateCursorLocation:touchLocation isMouse:NO];
+        LiSendMouseButtonEvent(BUTTON_ACTION_PRESS, BUTTON_LEFT);
+        _menuTapTouch = touch;
+    }
+    updated = true;
+} else if (_aButton.superlayer != nil && [_aButton.presentationLayer hitTest:touchLocation]) {
             [_controllerSupport setButtonFlag:_controller flags:A_FLAG];
             _aTouch = touch;
             UIImage* pressedJumpImage = [UIImage imageNamed:@"JumpButtonPressed"];
@@ -808,7 +832,11 @@ static float L3_Y;
     
 
          updated = true;
-        } else if (touch == _aTouch) {
+        } else if (touch == _menuTapTouch) {
+    LiSendMouseButtonEvent(BUTTON_ACTION_RELEASE, BUTTON_LEFT);
+    _menuTapTouch = nil;
+    updated = true;
+} else if (touch == _aTouch) {
             [_controllerSupport clearButtonFlag:_controller flags:A_FLAG];
             _aTouch = nil;
 
