@@ -801,7 +801,7 @@ static float L3_Y;
         _startupTapTouch = nil;
         _startupTapCount++;
 
-    if (_startupTapCount >= 3) {
+    if (_startupTapCount >= 2) {
         _startupTapMode = NO;
     }
 
